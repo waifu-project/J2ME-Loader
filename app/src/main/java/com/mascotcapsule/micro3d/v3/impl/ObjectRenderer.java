@@ -5,6 +5,9 @@ import android.opengl.GLES20;
 public class ObjectRenderer {
 
 	private final int program;
+	private final int normalHandle;
+	private final int positionHandle;
+	private final int mvpMatrixHandle;
 
 	// number of coordinates per vertex in this array
 	private static final int COORDS_PER_VERTEX = 3;
@@ -12,6 +15,9 @@ public class ObjectRenderer {
 
 	public ObjectRenderer() {
 		program = GLUtils.createProgram();
+		positionHandle = GLES20.glGetAttribLocation(program, "vPosition");
+		normalHandle = GLES20.glGetAttribLocation(program, "vNormal");
+		mvpMatrixHandle = GLES20.glGetUniformLocation(program, "uMVPMatrix");
 	}
 
 	public void draw(float[] mvpMatrix, FigureImpl figure) {
@@ -19,7 +25,6 @@ public class ObjectRenderer {
 		GLES20.glUseProgram(program);
 
 		// Prepare the triangle coordinate data
-		int positionHandle = GLES20.glGetAttribLocation(program, "vPosition");
 		GLES20.glEnableVertexAttribArray(positionHandle);
 		GLES20.glVertexAttribPointer(
 				positionHandle, COORDS_PER_VERTEX,
@@ -27,15 +32,11 @@ public class ObjectRenderer {
 				0, figure.triangleBuffer);
 
 		// Prepare the vertex normal data
-		int normalHandle = GLES20.glGetAttribLocation(program, "vNormal");
 		GLES20.glEnableVertexAttribArray(normalHandle);
 		GLES20.glVertexAttribPointer(
 				normalHandle, COORDS_PER_VERTEX,
 				GLES20.GL_FLOAT, false,
 				0, figure.normalBuffer);
-
-		int mvpMatrixHandle = GLES20.glGetUniformLocation(program, "uMVPMatrix");
-		GLUtils.checkGlError("glGetUniformLocation");
 
 		// Apply the projection and view transformation
 		GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);

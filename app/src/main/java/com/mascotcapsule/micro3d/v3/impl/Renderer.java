@@ -133,8 +133,7 @@ public class Renderer {
 		int[] intArrayO = intBuffer.array();
 		int[] intArrayR = new int[width * height];
 		for (int i = 0; i < height; i++) {
-			if (width >= 0)
-				System.arraycopy(intArrayO, i * width, intArrayR, (height - i - 1) * width, width);
+			System.arraycopy(intArrayO, i * width, intArrayR, (height - i - 1) * width, width);
 		}
 
 		Image image = Image.createImage(width, height);
