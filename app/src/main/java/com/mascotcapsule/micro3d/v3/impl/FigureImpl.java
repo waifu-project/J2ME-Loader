@@ -299,7 +299,7 @@ public class FigureImpl {
 			}
 
 			int[] mtx = new int[]{m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23};
-			bones.add(new Bone(parent, mtx, bone_vertices, bone_vertices + bone_vertices_sum));
+			bones.add(new Bone(parent, mtx, bone_vertices_sum, bone_vertices + bone_vertices_sum));
 
 			bone_vertices_sum += bone_vertices;
 		}
@@ -319,7 +319,7 @@ public class FigureImpl {
 					0, 4096, 0, 0,
 					0, 0, 4096, 0};
 		} else {
-			parent_mtx = bone.mtx;
+			parent_mtx = bones.get(parent).mtx;
 		}
 
 		int[] a = parent_mtx;
@@ -363,14 +363,13 @@ public class FigureImpl {
 
 	private void applyBoneTransform() {
 		for (Bone bone : bones) {
-			int[] mtx = getBoneMatrix(bone);
+			int[] m = getBoneMatrix(bone);
 
 			for (int i = bone.start; i < bone.end; i++) {
 				Vertex vertex = vertices.get(i);
 				int x = vertex.x;
 				int y = vertex.y;
 				int z = vertex.z;
-				int[] m = Arrays.copyOf(mtx, mtx.length);
 				vertex.set((m[0] * x + m[1] * y + m[2] * z) / 4096 + m[3],
 						(m[4] * x + m[5] * y + m[6] * z) / 4096 + m[7],
 						(m[8] * x + m[9] * y + m[10] * z) / 4096 + m[11]);
