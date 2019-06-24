@@ -18,22 +18,21 @@ public class ObjectRenderer {
 		// Add program to OpenGL environment
 		GLES20.glUseProgram(program);
 
-		// get handle to vertex shader's vPosition member
-		int positionHandle = GLES20.glGetAttribLocation(program, "vPosition");
-
-		// Enable a handle to the triangle vertices
-		GLES20.glEnableVertexAttribArray(positionHandle);
-
 		// Prepare the triangle coordinate data
+		int positionHandle = GLES20.glGetAttribLocation(program, "vPosition");
+		GLES20.glEnableVertexAttribArray(positionHandle);
 		GLES20.glVertexAttribPointer(
 				positionHandle, COORDS_PER_VERTEX,
 				GLES20.GL_FLOAT, false,
 				0, figure.triangleBuffer);
 
-		//int mColorHandle = GLES20.glGetUniformLocation(program, "vColor");
-
-		// Set color for drawing the triangle
-		//GLES20.glUniform4fv(mColorHandle, 1, color, 0);
+		// Prepare the vertex normal data
+		int normalHandle = GLES20.glGetAttribLocation(program, "vNormal");
+		GLES20.glEnableVertexAttribArray(normalHandle);
+		GLES20.glVertexAttribPointer(
+				normalHandle, COORDS_PER_VERTEX,
+				GLES20.GL_FLOAT, false,
+				0, figure.normalBuffer);
 
 		int mvpMatrixHandle = GLES20.glGetUniformLocation(program, "uMVPMatrix");
 		GLUtils.checkGlError("glGetUniformLocation");
@@ -48,6 +47,8 @@ public class ObjectRenderer {
 
 		// Disable vertex array
 		GLES20.glDisableVertexAttribArray(positionHandle);
+		// Disable normal array
+		GLES20.glDisableVertexAttribArray(normalHandle);
 	}
 
 }

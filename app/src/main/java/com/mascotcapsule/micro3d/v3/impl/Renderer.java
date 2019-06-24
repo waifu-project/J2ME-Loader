@@ -86,8 +86,10 @@ public class Renderer {
 
 			float ratio = (float) width / height;
 			// this projection matrix is applied to object coordinates
-			Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 2, 7);
+			Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 2, 15);
 			GLES20.glViewport(0, 0, width, height);
+			// Enable depth testing
+			GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 			objectRenderer = new ObjectRenderer();
 		}
 		// Draw background color

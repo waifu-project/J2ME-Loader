@@ -12,6 +12,7 @@ import java.util.Arrays;
 public class FigureImpl {
 
 	public FloatBuffer triangleBuffer;
+	public FloatBuffer normalBuffer;
 	public ShortBuffer indexBuffer;
 
 	private final static int MAGNITUDE_8BIT = 0;
@@ -127,6 +128,7 @@ public class FigureImpl {
 
 		createIndicesArray();
 		createVerticesArray();
+		createNormalsArray();
 
 		bis.close();
 	}
@@ -423,5 +425,21 @@ public class FigureImpl {
 		triangleBuffer = bb.asFloatBuffer();
 		triangleBuffer.put(verts);
 		triangleBuffer.position(0);
+	}
+
+	private void createNormalsArray() {
+		float[] norms = new float[normals.size() * 3];
+
+		int num = 0;
+		for (int i = 0; i < normals.size(); i++) {
+			norms[num++] = normals.get(i).x;
+			norms[num++] = normals.get(i).y;
+			norms[num++] = normals.get(i).z;
+		}
+		ByteBuffer bb = ByteBuffer.allocateDirect(norms.length * 4);
+		bb.order(ByteOrder.nativeOrder());
+		normalBuffer = bb.asFloatBuffer();
+		normalBuffer.put(norms);
+		normalBuffer.position(0);
 	}
 }

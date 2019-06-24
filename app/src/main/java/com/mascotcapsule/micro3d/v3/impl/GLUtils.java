@@ -8,28 +8,41 @@ public class GLUtils {
 	private static final String TAG = GLUtils.class.getSimpleName();
 
 	private static final String vertexShaderCode =
-			// This matrix member variable provides a hook to manipulate
-			// the coordinates of the objects that use this vertex shader
 			"uniform mat4 uMVPMatrix;" +
+					"attribute vec3 vNormal;" +
 					"attribute vec4 vPosition;" +
-					//"attribute vec4 aColor;" +
-					//"uniform vec4 vColor;" +
+					"varying vec3 fragColor;" +
 					"void main() {" +
+					"  vec3 vertexColor = vec3(1.0, 0.0, 0.0);" +
+					"  fragColor = vec3(0.0);" +
+					"  vec3 transformedVertexNormal = normalize((uMVPMatrix * vec4(vNormal, 0.0)).xyz);" +
+					"  vec3 inverseLightDirection = normalize(vec3(0.0, 1.0, 1.0));" +
+					/* Calculate the diffuse component. */
+					"  vec3 diffuseLightIntensity = vec3(1.0, 1.0, 1.0);" +
+					"  vec3 vertexDiffuseReflectionConstant = vertexColor;" +
+					"  float normalDotLight = max(0.0, dot(transformedVertexNormal, inverseLightDirection));" +
+					"  fragColor += normalDotLight * vertexDiffuseReflectionConstant * diffuseLightIntensity;" +
+					/* Calculate the ambient component. */
+					"  vec3 ambientLightIntensity = vec3(0.1, 0.1, 0.1);" +
+					"  vec3 vertexAmbientReflectionConstant = vertexColor;" +
+					"  fragColor += vertexAmbientReflectionConstant * ambientLightIntensity;" +
+					/* Make sure the fragment colour is between 0 and 1. */
+					"  clamp(fragColor, 0.0, 1.0);" +
 					"  gl_Position = uMVPMatrix * vPosition;" +
-					//"  vColor = aColor;" +
 					"}";
 
 	private static final String fragmentShaderCode =
 			"precision mediump float;" +
+					"varying vec3 fragColor;" +
 					"void main() {" +
-					"  gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);" +
+					"  gl_FragColor = vec4(fragColor, 1.0);" +
 					"}";
 
 	public static int createProgram() {
 		// prepare shaders and OpenGL program
-		int vertexShader = GLUtils.loadShader(
+		int vertexShader = loadShader(
 				GLES20.GL_VERTEX_SHADER, vertexShaderCode);
-		int fragmentShader = GLUtils.loadShader(
+		int fragmentShader = loadShader(
 				GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
 
 		int mProgram = GLES20.glCreateProgram();             // create empty OpenGL Program
