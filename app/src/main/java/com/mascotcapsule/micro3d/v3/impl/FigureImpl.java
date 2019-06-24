@@ -5,12 +5,14 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class FigureImpl {
 
 	public FloatBuffer triangleBuffer;
+	public ShortBuffer indexBuffer;
 
 	private final static int MAGNITUDE_8BIT = 0;
 	private final static int MAGNITUDE_10BIT = 1;
@@ -123,7 +125,8 @@ public class FigureImpl {
 			System.out.println("uninterpreted bytes in file");
 		}
 
-		createVerticesArray(num_polyt3, num_polyt4, num_polyf3, num_polyf4);
+		createIndicesArray();
+		createVerticesArray();
 
 		bis.close();
 	}
@@ -377,56 +380,48 @@ public class FigureImpl {
 		}
 	}
 
-	private void createVerticesArray(int num_polyt3, int num_polyt4, int num_polyf3, int num_polyf4) {
-		float[] verts3 = new float[(num_polyt3 + num_polyf3) * 3 * 3 + (num_polyt4 + num_polyf4) * 3 * 6];
+	private void createIndicesArray() {
+		short[] indices = new short[triangleFaces.size() * 3 + quadFaces.size() * 6];
 
 		int num = 0;
 		for (int i = 0; i < quadFaces.size(); i++) {
 			Polygon4 polygon4 = quadFaces.get(i);
-			verts3[num++] = vertices.get(polygon4.a).x;
-			verts3[num++] = vertices.get(polygon4.a).y;
-			verts3[num++] = vertices.get(polygon4.a).z;
-
-			verts3[num++] = vertices.get(polygon4.b).x;
-			verts3[num++] = vertices.get(polygon4.b).y;
-			verts3[num++] = vertices.get(polygon4.b).z;
-
-			verts3[num++] = vertices.get(polygon4.c).x;
-			verts3[num++] = vertices.get(polygon4.c).y;
-			verts3[num++] = vertices.get(polygon4.c).z;
+			indices[num++] = (short) polygon4.a;
+			indices[num++] = (short) polygon4.b;
+			indices[num++] = (short) polygon4.c;
 
 			//Create second triangle
 
-			verts3[num++] = vertices.get(polygon4.c).x;
-			verts3[num++] = vertices.get(polygon4.c).y;
-			verts3[num++] = vertices.get(polygon4.c).z;
-
-			verts3[num++] = vertices.get(polygon4.b).x;
-			verts3[num++] = vertices.get(polygon4.b).y;
-			verts3[num++] = vertices.get(polygon4.b).z;
-
-			verts3[num++] = vertices.get(polygon4.d).x;
-			verts3[num++] = vertices.get(polygon4.d).y;
-			verts3[num++] = vertices.get(polygon4.d).z;
+			indices[num++] = (short) polygon4.c;
+			indices[num++] = (short) polygon4.b;
+			indices[num++] = (short) polygon4.d;
 		}
 		for (int i = 0; i < triangleFaces.size(); i++) {
 			Polygon3 polygon3 = triangleFaces.get(i);
-			verts3[num++] = vertices.get(polygon3.a).x;
-			verts3[num++] = vertices.get(polygon3.a).y;
-			verts3[num++] = vertices.get(polygon3.a).z;
-
-			verts3[num++] = vertices.get(polygon3.b).x;
-			verts3[num++] = vertices.get(polygon3.b).y;
-			verts3[num++] = vertices.get(polygon3.b).z;
-
-			verts3[num++] = vertices.get(polygon3.c).x;
-			verts3[num++] = vertices.get(polygon3.c).y;
-			verts3[num++] = vertices.get(polygon3.c).z;
+			indices[num++] = (short) polygon3.a;
+			indices[num++] = (short) polygon3.b;
+			indices[num++] = (short) polygon3.c;
 		}
-		ByteBuffer bb = ByteBuffer.allocateDirect(verts3.length * 4);
+		ByteBuffer bb = ByteBuffer.allocateDirect(indices.length * 2);
+		bb.order(ByteOrder.nativeOrder());
+		indexBuffer = bb.asShortBuffer();
+		indexBuffer.put(indices);
+		indexBuffer.position(0);
+	}
+
+	private void createVerticesArray() {
+		float[] verts = new float[vertices.size() * 3];
+
+		int num = 0;
+		for (int i = 0; i < vertices.size(); i++) {
+			verts[num++] = vertices.get(i).x;
+			verts[num++] = vertices.get(i).y;
+			verts[num++] = vertices.get(i).z;
+		}
+		ByteBuffer bb = ByteBuffer.allocateDirect(verts.length * 4);
 		bb.order(ByteOrder.nativeOrder());
 		triangleBuffer = bb.asFloatBuffer();
-		triangleBuffer.put(verts3);
+		triangleBuffer.put(verts);
 		triangleBuffer.position(0);
 	}
 }

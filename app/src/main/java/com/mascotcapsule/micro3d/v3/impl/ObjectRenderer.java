@@ -42,9 +42,9 @@ public class ObjectRenderer {
 		GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
 		GLUtils.checkGlError("glUniformMatrix4fv");
 
-		int count = figure.triangleBuffer.capacity() / COORDS_PER_VERTEX;
+		int count = figure.indexBuffer.capacity();
 		// Draw the triangle
-		GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, count);
+		GLES20.glDrawElements(GLES20.GL_TRIANGLES, count, GLES20.GL_UNSIGNED_SHORT, figure.indexBuffer);
 
 		// Disable vertex array
 		GLES20.glDisableVertexAttribArray(positionHandle);
