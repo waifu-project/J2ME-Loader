@@ -208,8 +208,10 @@ public class AffineTrans {
 		if (v == null) {
 			throw new NullPointerException();
 		}
-		Vector3D d = new Vector3D();
-		return d;
+		v.set((m00 * v.x + m01 * v.y + m02 * v.z) / 4096 + m03,
+				(m10 * v.x + m11 * v.y + m12 * v.z) / 4096 + m13,
+				(m20 * v.x + m21 * v.y + m22 * v.z) / 4096 + m23);
+		return v;
 	}
 
 	public final void rotationX(int r) {
