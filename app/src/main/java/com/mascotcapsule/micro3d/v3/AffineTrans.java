@@ -46,12 +46,48 @@ public class AffineTrans {
 	}
 
 	public final void setRotationX(int r) {
+		int sin = Util3D.sin(r);
+		int cos = Util3D.cos(r);
+
+		this.m00 = 4096;
+		this.m01 = 0;
+		this.m02 = 0;
+		this.m10 = 0;
+		this.m11 = cos;
+		this.m12 = -sin;
+		this.m20 = 0;
+		this.m21 = sin;
+		this.m22 = cos;
 	}
 
 	public final void setRotationY(int r) {
+		int sin = Util3D.sin(r);
+		int cos = Util3D.cos(r);
+
+		this.m00 = cos;
+		this.m01 = 0;
+		this.m02 = sin;
+		this.m10 = 0;
+		this.m11 = 4096;
+		this.m12 = 0;
+		this.m20 = -sin;
+		this.m21 = 0;
+		this.m22 = cos;
 	}
 
 	public final void setRotationZ(int r) {
+		int sin = Util3D.sin(r);
+		int cos = Util3D.cos(r);
+
+		this.m00 = cos;
+		this.m01 = -sin;
+		this.m02 = 0;
+		this.m10 = sin;
+		this.m11 = cos;
+		this.m12 = 0;
+		this.m20 = 0;
+		this.m21 = 0;
+		this.m22 = 4096;
 	}
 
 	public final void setIdentity() {
