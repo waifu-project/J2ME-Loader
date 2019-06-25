@@ -232,6 +232,7 @@ public class AffineTrans {
 		if (a == null) {
 			throw new NullPointerException();
 		}
+		multiply(this, this, a);
 	}
 
 	public final void multiply(AffineTrans a1, AffineTrans a2) {
@@ -242,6 +243,7 @@ public class AffineTrans {
 		if (a1 == null || a2 == null) {
 			throw new NullPointerException();
 		}
+		multiply(this, a1, a2);
 	}
 
 	public final void rotationV(Vector3D v, int r) {
@@ -262,5 +264,24 @@ public class AffineTrans {
 		if (pos == null || look == null || up == null) {
 			throw new NullPointerException();
 		}
+	}
+
+	private void multiply(AffineTrans result, AffineTrans a, AffineTrans b) {
+		AffineTrans temp = new AffineTrans();
+		temp.m00 = (a.m00 * b.m00 + a.m01 * b.m10 + a.m02 * b.m20) / 4096;
+		temp.m01 = (a.m00 * b.m01 + a.m01 * b.m11 + a.m02 * b.m21) / 4096;
+		temp.m02 = (a.m00 * b.m02 + a.m01 * b.m12 + a.m02 * b.m22) / 4096;
+		temp.m03 = (a.m00 * b.m03 + a.m01 * b.m13 + a.m02 * b.m23) / 4096 + a.m03;
+
+		temp.m10 = (a.m10 * b.m00 + a.m11 * b.m10 + a.m12 * b.m20) / 4096;
+		temp.m11 = (a.m10 * b.m01 + a.m11 * b.m11 + a.m12 * b.m21) / 4096;
+		temp.m12 = (a.m10 * b.m02 + a.m11 * b.m12 + a.m12 * b.m22) / 4096;
+		temp.m13 = (a.m10 * b.m03 + a.m11 * b.m13 + a.m12 * b.m23) / 4096 + a.m13;
+
+		temp.m20 = (a.m20 * b.m00 + a.m21 * b.m10 + a.m22 * b.m20) / 4096;
+		temp.m21 = (a.m20 * b.m01 + a.m21 * b.m11 + a.m22 * b.m21) / 4096;
+		temp.m22 = (a.m20 * b.m02 + a.m21 * b.m12 + a.m22 * b.m22) / 4096;
+		temp.m23 = (a.m20 * b.m03 + a.m21 * b.m13 + a.m22 * b.m23) / 4096 + a.m23;
+		result.set(temp);
 	}
 }
