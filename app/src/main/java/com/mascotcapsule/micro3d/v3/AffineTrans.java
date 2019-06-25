@@ -17,18 +17,9 @@
 package com.mascotcapsule.micro3d.v3;
 
 public class AffineTrans {
-	public int m00;
-	public int m01;
-	public int m02;
-	public int m03;
-	public int m10;
-	public int m11;
-	public int m12;
-	public int m13;
-	public int m20;
-	public int m21;
-	public int m22;
-	public int m23;
+	public int m00, m01, m02, m03;
+	public int m10, m11, m12, m13;
+	public int m20, m21, m22, m23;
 
 	public AffineTrans(int m00, int m01, int m02, int m03, int m10, int m11, int m12, int m13, int m20, int m21, int m22, int m23) {
 		set(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23);
@@ -64,6 +55,7 @@ public class AffineTrans {
 	}
 
 	public final void setIdentity() {
+		set(4096, 0, 0, 0, 0, 4096, 0, 0, 0, 0, 4096, 0);
 	}
 
 	public final void get(int[] a) {
