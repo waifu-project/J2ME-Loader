@@ -85,6 +85,7 @@ import ru.playsoftware.j2meloader.settings.SettingsActivity;
 import ru.playsoftware.j2meloader.util.AppUtils;
 import ru.playsoftware.j2meloader.util.JarConverter;
 import ru.playsoftware.j2meloader.util.LogUtils;
+import ru.playsoftware.j2meloader.webx.WebViewActivity;
 
 import static ru.playsoftware.j2meloader.util.Constants.*;
 
@@ -133,6 +134,16 @@ public class AppsListFragment extends ListFragment {
 			i.putExtra(FilePickerActivity.EXTRA_START_PATH, FilteredFilePickerFragment.getLastPath());
 			startActivityForResult(i, REQUEST_FILE);
 		});
+
+		fab.setOnLongClickListener(v -> {
+			// TODO
+
+			System.out.println("start webview");
+			Intent i = new Intent(getActivity(), WebViewActivity.class);
+			startActivity(i, null);
+			return true;
+		});
+
 	}
 
 	@Override

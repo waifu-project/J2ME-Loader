@@ -29,6 +29,7 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
+        android:theme="@style/Theme.AppCompat.Light"
         tools:targetApi="o">
         <activity
             android:name=".MainActivity"
@@ -91,6 +92,7 @@
         </intent-filter>
         </activity>
         <activity android:name=".donations.DonationsActivity" />
+        <activity android:name=".webx.WebViewActivity" />
         <activity android:name=".settings.KeyMapperActivity" />
         <activity
             android:name=".filepicker.FilteredFilePickerActivity"
