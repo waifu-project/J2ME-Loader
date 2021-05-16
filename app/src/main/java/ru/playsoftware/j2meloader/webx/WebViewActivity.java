@@ -1,18 +1,20 @@
 package ru.playsoftware.j2meloader.webx;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -23,8 +25,6 @@ import ru.playsoftware.j2meloader.base.BaseActivity;
 
 public class WebViewActivity extends BaseActivity {
 
-//    private String j2meGameURL = "http://172.16.50.28:5500/index.html";
-
     private String j2meGameURL = "http://j2me_games.js.cool";
 
     private String webviewTitle = "j2me游戏下载";
@@ -32,6 +32,10 @@ public class WebViewActivity extends BaseActivity {
     private String webviewJavascriptKey = "WEBVIEW";
 
     private WebView webview;
+
+    private ProgressBar progressBar;
+
+    private TextView textView;
 
     static class GameInfo {
 
@@ -73,7 +77,7 @@ public class WebViewActivity extends BaseActivity {
     }
 
     private void callbackDownloadGame(GameInfo gameInfo) {
-
+        System.out.println(gameInfo);
     }
 
     private void callJavaScript(WebView view, String methodName, Object...params){
@@ -104,9 +108,7 @@ public class WebViewActivity extends BaseActivity {
     }
 
     private void webviewInitFunc() {
-        if (!j2meGameURL.startsWith("http://172.16.50.28")) {
-            webview.loadUrl("javascript:document.getElementsByTagName(\"h1\")[0].remove()\n");
-        }
+        webview.loadUrl("javascript:document.getElementsByTagName(\"h1\")[0].remove()\n");
         getSupportActionBar().setTitle(webviewTitle);
     }
 
@@ -116,11 +118,24 @@ public class WebViewActivity extends BaseActivity {
         this.setContentView(R.layout.activity_webview);
         webview = (WebView) findViewById(R.id.webviewRuntime);
 
+        progressBar = (ProgressBar) findViewById(R.id.loadingBar);
+
+        textView = (TextView) findViewById(R.id.loadingTextView);
+
         webview.setWebViewClient(new WebViewClient() {
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                progressBar.setVisibility(View.VISIBLE);
+                textView.setVisibility(View.VISIBLE);
+                super.onPageStarted(view, url, favicon);
+            }
 
             @Override
             public void onPageFinished(WebView view, String url) {
                 webviewInitFunc();
+                progressBar.setVisibility(View.GONE);
+                textView.setVisibility(View.GONE);
                 super.onPageFinished(view, url);
             }
 
