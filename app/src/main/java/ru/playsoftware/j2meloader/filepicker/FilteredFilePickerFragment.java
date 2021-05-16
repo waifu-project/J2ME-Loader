@@ -36,7 +36,9 @@ import ru.playsoftware.j2meloader.R;
 public class FilteredFilePickerFragment extends FilePickerFragment {
 	private static final List<String> extList = Arrays.asList(".jad", ".jar");
 	private static final Stack<File> history = new Stack<>();
-	private static File currentDir = Environment.getExternalStorageDirectory();
+
+	// 默认搜索下载目录
+	private static File currentDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS); // Environment.getExternalStorageDirectory();
 
 	@NonNull
 	@Override
