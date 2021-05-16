@@ -1,5 +1,6 @@
 package ru.playsoftware.j2meloader.webx;
 
+import android.app.DownloadManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 
 import ru.playsoftware.j2meloader.R;
 import ru.playsoftware.j2meloader.base.BaseActivity;
+import ru.playsoftware.j2meloader.util.DownloadFile;
 
 public class WebViewActivity extends BaseActivity {
 
@@ -37,7 +39,9 @@ public class WebViewActivity extends BaseActivity {
 
     private TextView textView;
 
-    static class GameInfo {
+    public static class GameInfo {
+
+        private String extensionName = "jar";
 
         public String game_title;
 
@@ -61,23 +65,35 @@ public class WebViewActivity extends BaseActivity {
             return sort;
         }
 
-        GameInfo(List<String> rawStringList) {
-            int sort = Integer.parseInt(rawStringList.get(1).trim());
-            this.game_title = rawStringList.get(0).trim();
-            this.game_url = rawStringList.get(2).trim();
+        public String getFileName() {
+            return game_title + '.' + extensionName;
+        }
+
+        public GameInfo(String[] rawStringList) {
+            int sort = Integer.parseInt(rawStringList[1].trim());
+            this.game_title = rawStringList[0].trim();
+            this.game_url = rawStringList[2].trim();
             this.game_sort = sort;
         }
 
-        GameInfo(String title, String game_url, int game_sort) {
+        public GameInfo(String title, String game_url, int game_sort) {
             this.game_title = title;
             this.game_url = game_url;
             this.game_sort = game_sort;
         }
 
+        public GameInfo() {
+
+        }
+
     }
 
     private void callbackDownloadGame(GameInfo gameInfo) {
-        System.out.println(gameInfo);
+        try {
+            DownloadFile.download(this.getApplicationContext(), gameInfo);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void callJavaScript(WebView view, String methodName, Object...params){
@@ -155,15 +171,12 @@ public class WebViewActivity extends BaseActivity {
 
     private class handleJavascriptEvent {
 
-        private String symbol = "|";
+        private String symbol = "\\|";
 
         @RequiresApi(api = Build.VERSION_CODES.N)
         private GameInfo easyParseString(String rawstring) {
-            // https://stackoverflow.com/a/47795244
-            Pattern regx = Pattern.compile("\\" + symbol);
-            List<String> data = regx.splitAsStream(rawstring).collect(Collectors.toList());
-            if (data.size() < 3) return null;
-            return new GameInfo(data);
+            String[] list = rawstring.split(symbol);
+            return new GameInfo(list);
         }
 
         @RequiresApi(api = Build.VERSION_CODES.N)
