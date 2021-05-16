@@ -28,12 +28,14 @@ import androidx.fragment.app.DialogFragment;
 import ru.playsoftware.j2meloader.R;
 
 public class HelpDialogFragment extends DialogFragment {
+
 	@NonNull
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		TextView tv = new TextView(getActivity());
 		tv.setMovementMethod(LinkMovementMethod.getInstance());
-		tv.setText(Html.fromHtml(getString(R.string.help_message)));
+		String helpText = getString(R.string.help_message);
+		tv.setText(Html.fromHtml(helpText));
 		tv.setTextSize(16);
 		float density = getResources().getDisplayMetrics().density;
 		int paddingHorizontal = (int) (density * 20);
